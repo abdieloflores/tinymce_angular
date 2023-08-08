@@ -136,7 +136,7 @@ export class AppComponent {
     height: 768,
     content_css: 'document',
     noneditable_class: 'nonedit',
-    noneditable_regexp: /{{([^}}]+)?}}/g, // Expresión regular para reconocer las etiquetas {{VARIABLE}}
+    // noneditable_regexp: /{{([^}}]+)?}}/g, // Expresión regular para reconocer las etiquetas {{VARIABLE}}
     editable_class: 'editable',
     promotion: false,
     base_url: '/tinymce',
@@ -218,7 +218,6 @@ export class AppComponent {
   }
 
   handlerSelectionChange(event: Event) {
-    const editor = event.editor;
     if (this.countNoEditableTags(this.currentContent) < this.noEditTags) {
       this.currentContent = this.prevContent;
     }
