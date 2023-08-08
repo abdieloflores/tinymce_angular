@@ -235,7 +235,6 @@ export class AppComponent {
 
   setPrevContent(editor: any) {
     this.prevContent = editor.getContent();
-    console.log(editor.editorInstance.selection.getBookmark(2, true));
   }
 
   loadVariablesTemplate(variables: any, plantilla: string) {
