@@ -1,5 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
-import { EditorComponent } from '@tinymce/tinymce-angular';
+import { Component } from '@angular/core';
 import Swal from 'sweetalert2';
 
 enum ToolbarLocation {
@@ -14,6 +13,12 @@ enum ToolbarMode {
   Scrolling = 'scrolling',
   Wrap = 'wrap',
 }
+
+interface Event {
+  event: any,
+  editor: any
+}
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -21,8 +26,6 @@ enum ToolbarMode {
 })
 export class AppComponent {
   title = 'TinyMCE Angular';
-
-  @ViewChild('editor') editor!: EditorComponent;
 
   id: Number = Math.random();
   prevContent: string = '';
@@ -107,23 +110,8 @@ export class AppComponent {
       options: { title: 'Opciones', items: 'save final_print sign_online' },
     },
     menubar: 'file edit insert view format table variables options',
-    plugins: 'lists link image table code wordcount searchreplace codesample code mergetags',
-    toolbar: 'undo redo | alignleft aligncenter alignright alignjustify | bold italic | bullist numlist outdent indent | code mergetags',
-    mergetags_list: [
-      {
-        title: 'Example merge tags list',
-        menu: [
-          {
-            value: 'Example.1',
-            title: 'Example one'
-          },
-          {
-            value: 'Example.2',
-            title: 'Example two'
-          }
-        ]
-      }
-    ],
+    plugins: 'lists link image table code wordcount searchreplace codesample code',
+    toolbar: 'undo redo | alignleft aligncenter alignright alignjustify | bold italic | bullist numlist outdent indent | code',
     toolbar_location: ToolbarLocation.Auto,
     toolbar_mode: ToolbarMode.Sliding,
     mobile: {
@@ -148,6 +136,7 @@ export class AppComponent {
     height: 768,
     content_css: 'document',
     noneditable_class: 'nonedit',
+    noneditable_regexp: /{{([^}}]+)?}}/g, // Expresión regular para reconocer las etiquetas {{VARIABLE}}
     editable_class: 'editable',
     promotion: false,
     base_url: '/tinymce',
@@ -167,7 +156,7 @@ export class AppComponent {
         icon: 'plus',
         disabled: true,
         onAction: () => {
-          this.mostrarSelectVariable(editor);
+          this.showSelectVariable(editor);
         }
       });
 
@@ -228,23 +217,25 @@ export class AppComponent {
     return tempContainer.getElementsByClassName('nonedit').length;
   }
 
-  handlerSelectionChange(event: any) {
+  handlerSelectionChange(event: Event) {
+    const editor = event.editor;
     if (this.countNoEditableTags(this.currentContent) < this.noEditTags) {
       this.currentContent = this.prevContent;
-      console.warn('Intentarón borrar una variable no borrable.');
     }
   }
 
-  handlerKeyDown(event: any) {
+  handlerKeyDown(event: Event) {
     this.setPrevContent(event.editor);
   }
 
-  handlerMouseDown(event: any) {
-    this.setPrevContent(event.editor);
+  handlerMouseDown(event: Event) {
+    const editor = event.editor;
+    this.setPrevContent(editor);
   }
 
   setPrevContent(editor: any) {
     this.prevContent = editor.getContent();
+    console.log(editor.editorInstance.selection.getBookmark(2, true));
   }
 
   loadVariablesTemplate(variables: any, plantilla: string) {
@@ -275,7 +266,7 @@ export class AppComponent {
     return returnHTML;
   }
 
-  mostrarSelectVariable(editor: any) {
+  showSelectVariable(editor: any) {
     const opcionesSelect: Record<string, string> = {};
     this.variablesDocuments.forEach((variable) => {
       opcionesSelect[variable.descr] = variable.descr;
@@ -290,13 +281,13 @@ export class AppComponent {
     }).then((result) => {
       if (result.isConfirmed && result.value) {
         const selectedVariable = result.value;
-        this.insertarVariableEnEditor(editor, selectedVariable);
+        this.insertVariableInEditor(editor, selectedVariable);
       }
     });
   }
 
 
-  insertarVariableEnEditor(editor: any, variable: string) {
+  insertVariableInEditor(editor: any, variable: string) {
     if (editor) {
       editor.insertContent(variable);
       this.currentContent = editor.getContent();
