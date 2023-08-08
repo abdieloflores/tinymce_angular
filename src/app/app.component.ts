@@ -2,6 +2,18 @@ import { Component, ViewChild } from '@angular/core';
 import { EditorComponent } from '@tinymce/tinymce-angular';
 import Swal from 'sweetalert2';
 
+enum ToolbarLocation {
+  Top = 'top',
+  Bottom = 'bottom',
+  Auto = 'auto'
+}
+
+enum ToolbarMode {
+  Floating = 'floating',
+  Sliding = 'sliding',
+  Scrolling = 'scrolling',
+  Wrap = 'wrap',
+}
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -32,29 +44,30 @@ export class AppComponent {
   ];
 
   documentStyles = `
-    @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-    body {
-      font-family: Montserrat,Helvetica, Arial, sans-serif;
-      font-size: 11pt;
-      padding: 4rem;
-    }
-    .nonedit {
-      border: dashed 1px rgba(144, 164, 174,.5);
-      background-color: rgb(241, 241, 241);
-    }
-    .editable{}
-    .mce-content-body [contentEditable=false][data-mce-selected] {
-      cursor: not-allowed;
-      outline: 1px solid rgba(0,0,0,1);
-    }
-    .tinymce_table{
-      border:1pz solid black;
-    }
+  @import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+  body {
+    font-family: Montserrat, Helvetica, Arial, sans-serif;
+    font-size: 10pt;
+    padding: .5in 1in .5in 1in;
+    max-width: 21.59cm;
+    min-width: 21.59cm;
+  }
+  .nonedit {
+    border: dashed 1px rgba(144, 164, 174, 0.5);
+    background-color: rgb(241, 241, 241);
+  }
+  .editable {
+  }
+  .mce-content-body [contentEditable="false"][data-mce-selected] {
+    cursor: not-allowed;
+    outline: 1px solid rgba(0, 0, 0, 1);
+  }
   `;
 
   plantilla = {
     plantillaid: 1,
-    plantilladescr: `<p class="p1" style="text-align: center;"><strong>ORDEN DE INVESTIGACI&Oacute;N A LA POLIC&Iacute;A MINISTERIAL</strong></p><p class="p2">&nbsp;</p><p class="p3" style="text-align: right;"><strong>No. de Caso:<span class="Apple-converted-space">&nbsp; EXPEDIENTE_NUMERO</span></strong></p><p class="p2">&nbsp;</p><p class="p4" style="text-align: left;"><strong>Lugar:</strong> DOCUMENTO_CIUDAD, DOCUMENTO_ESTADO<br><strong>Fecha:</strong><span class="Apple-converted-space">&nbsp; DOCUMENTO_FECHA</span>,<span class="Apple-converted-space">&nbsp; </span>Hora: DOCUMENTO_HORA<br><strong>Unidad de Investigaci&oacute;n:</strong> DOCUMENTO_OFICINA<br><strong>Agente del Ministerio P&Uacute;blico:</strong> EXPEDIENTE_NOMBRE_DEL_RESPONSABLE<br><strong>Agente de la Polic&iacute;a Ministerial Asignado:</strong><span class="Apple-converted-space">&nbsp; EXPEDIENTE_NOMBRE_DEL_AGENTE_RESPONSABLE</span></p><p class="p4" style="text-align: justify;">S&iacute;rvase llevar a cabo exhaustiva investigaci&oacute;n de los hechos denunciados dentro del n&uacute;mero de caso antes citado, debiendo informar a esta fiscal&iacute;a del resultado de la misma, en un per&iacute;odo de <span class="s1"><strong>30 d&iacute;as</strong></span>, esto con la finalidad de esclarecer los hechos denunciados por el <strong>OFENDIDO_NOMBRE</strong> por la probable comisi&oacute;n del delito de RELACION_DELITO. Lo anterior con fundamento en lo dispuesto por los art&iacute;culos 127, 131, 132 y dem&aacute;s relativos del C&oacute;digo Nacional de Procedimientos Penales y dem&aacute;s ordenamientos legales aplicables.</p><p class="p7">&nbsp;</p><p class="p1" style="text-align: center;">EL AGENTE DEL MINISTERIO P&Uacute;BLICO:</p><p class="p7" style="text-align: center;">&nbsp;</p><p class="p1" style="text-align: center;">________________________________________</p><p class="p1" style="text-align: center;">LIC. EXPEDIENTE_NOMBRE_DEL_RESPONSABLE<br>AGENTE DEL MINISTERIO P&Uacute;BLICO TITULAR DE LA<br>DOCUMENTO_OFICINA</p>`,
+    encabezado: `<table id="encabezado" contenteditable="false" style="border: 2px solid rgb(165, 165, 165); width: 100%; height: 1in; background-color: rgb(228, 228, 228);"> <tbody> <tr> <td style="text-align: center; width: 20%;"><img style="max-height: 0.9in; width: auto;" src="https://cdtec.fgebc.gob.mx/cdtec/assets/img/FGEBC.png" alt="Logo FGEBC"></td> <td style="text-align: center; font-weight: bold; text-transform: uppercase; padding: 10px; width: 50%;">Fiscal&iacute;a General del Estado de <br>Baja California</td> <td style="text-align: center; width: 20%;">&nbsp;</td> </tr> </tbody> </table>`,
+    plantilladescr: `<p class="p1" style="text-align: center;"><strong>ORDEN DE INVESTIGACI&Oacute;N A LA POLIC&Iacute;A MINISTERIAL</strong></p><p class="p1" style="text-align: center;">&nbsp;</p><p class="p3" style="text-align: right;"><strong>No. de Caso:<span class="Apple-converted-space">&nbsp; EXPEDIENTE_NUMERO</span></strong></p><p class="p2">&nbsp;</p><p class="p4" style="text-align: left;"><strong>Lugar:</strong> DOCUMENTO_CIUDAD, DOCUMENTO_ESTADO<br><strong>Fecha:</strong><span class="Apple-converted-space">&nbsp; DOCUMENTO_FECHA</span>,<span class="Apple-converted-space">&nbsp; </span>Hora: DOCUMENTO_HORA<br><strong>Unidad de Investigaci&oacute;n:</strong> DOCUMENTO_OFICINA<br><strong>Agente del Ministerio P&Uacute;blico:</strong> EXPEDIENTE_NOMBRE_DEL_RESPONSABLE<br><strong>Agente de la Polic&iacute;a Ministerial Asignado:</strong><span class="Apple-converted-space">&nbsp; EXPEDIENTE_NOMBRE_DEL_AGENTE_RESPONSABLE</span></p><p class="p4" style="text-align: left;">&nbsp;</p><p class="p4" style="text-align: justify;">S&iacute;rvase llevar a cabo exhaustiva investigaci&oacute;n de los hechos denunciados dentro del n&uacute;mero de caso antes citado, debiendo informar a esta fiscal&iacute;a del resultado de la misma, en un per&iacute;odo de <span class="s1"><strong>30 d&iacute;as</strong></span>, esto con la finalidad de esclarecer los hechos denunciados por el <strong>OFENDIDO_NOMBRE</strong> por la probable comisi&oacute;n del delito de RELACION_DELITO. Lo anterior con fundamento en lo dispuesto por los art&iacute;culos 127, 131, 132 y dem&aacute;s relativos del C&oacute;digo Nacional de Procedimientos Penales y dem&aacute;s ordenamientos legales aplicables.</p><p class="p1" style="text-align: center;">&nbsp;</p><p class="p1" style="text-align: center;">&nbsp;</p><p class="p1" style="text-align: center;">EL AGENTE DEL MINISTERIO P&Uacute;BLICO:</p><p class="p7" style="text-align: center;">&nbsp;</p><p class="p1" style="text-align: center;">________________________________________</p><p class="p1" style="text-align: center;">LIC. EXPEDIENTE_NOMBRE_DEL_RESPONSABLE<br>AGENTE DEL MINISTERIO P&Uacute;BLICO TITULAR DE LA<br>DOCUMENTO_OFICINA</p>`,
     variables: [
       { id: 1, descr: 'EXPEDIENTE_NUMERO', contenido: '0201-2023-00003/NUC', borrable: 'N', },
       { id: 2, descr: 'DOCUMENTO_CIUDAD', contenido: 'ENSENADA', borrable: 'N', },
@@ -96,8 +109,26 @@ export class AppComponent {
     menubar: 'file edit insert view format table variables options',
     plugins: 'lists link image table code wordcount searchreplace codesample code',
     toolbar: 'undo redo | alignleft aligncenter alignright alignjustify | bold italic | bullist numlist outdent indent | code',
+    toolbar_location: ToolbarLocation.Auto,
+    toolbar_mode: ToolbarMode.Sliding,
+    mobile: {
+      menu: {
+        file: { title: 'Archivo', items: '' },
+        edit: { title: 'Editar', items: 'cut copy paste pastetext | selectall' },
+        view: { title: 'Ver', items: 'code wordcount' },
+        insert: { title: 'Insertar', items: '' },
+        format: { title: 'Formato', items: 'bold italic underline strikethrough superscript subscript | styles fontsize align lineheight | removeformat', },
+        table: { title: 'Tablas', items: 'inserttable | cell row column | advtablesort | tableprops deletetable', },
+        variables: { title: 'Variables', items: 'add_variable load_variables update_variables' },
+        options: { title: 'Opciones', items: 'save final_print sign_online' },
+      },
+      menubar: 'file edit insert view format table variables options',
+      plugins: 'lists link image table code wordcount searchreplace codesample code',
+      toolbar: 'undo redo | alignleft aligncenter alignright alignjustify | bold italic | bullist numlist outdent indent | code',
+      toolbar_location: ToolbarLocation.Auto,
+      toolbar_mode: ToolbarMode.Sliding,
+    },
     content_style: this.documentStyles,
-    visual_table_class: 'tinymce_table',
     browser_spellcheck: true,
     height: 768,
     content_css: 'document',
@@ -171,7 +202,7 @@ export class AppComponent {
   };
 
   ngOnInit() {
-    this.prevContent = this.plantilla.plantilladescr;
+    this.prevContent = this.plantilla.encabezado + this.plantilla.plantilladescr;
     this.currentContent = this.prevContent;
     this.noEditTags = this.countNoEditableTags(this.prevContent);
   }
@@ -185,7 +216,7 @@ export class AppComponent {
   handlerSelectionChange(event: any) {
     if (this.countNoEditableTags(this.currentContent) < this.noEditTags) {
       this.currentContent = this.prevContent;
-      console.error('No puedes eliminar variables no borrables');
+      console.warn('Intentarón borrar una variable no borrable.');
     }
   }
 
