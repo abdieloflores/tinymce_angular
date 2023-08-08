@@ -47,11 +47,14 @@ export class AppComponent {
       cursor: not-allowed;
       outline: 1px solid rgba(0,0,0,1);
     }
+    .tinymce_table{
+      border:1pz solid black;
+    }
   `;
 
   plantilla = {
     plantillaid: 1,
-    plantilladescr: `<p class="p1" style="text-align: center;"><strong>ORDEN DE INVESTIGACI&Oacute;N A LA POLIC&Iacute;A MINISTERIAL</strong></p><p class="p2">&nbsp;</p><p class="p3" style="text-align: right;"><strong>No. de Caso:<span class="Apple-converted-space">&nbsp; EXPEDIENTE_NUMERO</span></strong></p><p class="p2">&nbsp;</p><p class="p4"><strong>Lugar:</strong> DOCUMENTO_CIUDAD, DOCUMENTO_ESTADO<br><strong>Fecha:</strong><span class="Apple-converted-space">&nbsp; DOCUMENTO_FECHA</span>,<span class="Apple-converted-space">&nbsp; </span>Hora: DOCUMENTO_HORA<br><strong>Unidad de Investigaci&oacute;n:</strong> DOCUMENTO_OFICINA<br><strong>Agente del Ministerio P&Uacute;blico:</strong> EXPEDIENTE_NOMBRE_DEL_RESPONSABLE<br><strong>Agente de la Polic&iacute;a Ministerial Asignado:</strong><span class="Apple-converted-space">&nbsp; EXPEDIENTE_NOMBRE_DEL_AGENTE_RESPONSABLE<br><br></span>S&iacute;rvase llevar a cabo exhaustiva investigaci&oacute;n de los hechos denunciados dentro del n&uacute;mero de caso antes citado, debiendo informar a esta fiscal&iacute;a del resultado de la misma, en un per&iacute;odo de <span class="s1"><strong>30 d&iacute;as</strong></span>, esto con la finalidad de esclarecer los hechos denunciados por el <strong>OFENDIDO_NOMBRE</strong> por la probable comisi&oacute;n del delito de RELACION_DELITO. Lo anterior con fundamento en lo dispuesto por los art&iacute;culos 127, 131, 132 y dem&aacute;s relativos del C&oacute;digo Nacional de Procedimientos Penales y dem&aacute;s ordenamientos legales aplicables.</p><p class="p7">&nbsp;</p><p class="p1" style="text-align: center;">EL AGENTE DEL MINISTERIO P&Uacute;BLICO:</p><p class="p7" style="text-align: center;">&nbsp;</p><p class="p1" style="text-align: center;">________________________________________</p><p class="p1" style="text-align: center;">LIC. EXPEDIENTE_NOMBRE_DEL_RESPONSABLE<br>AGENTE DEL MINISTERIO P&Uacute;BLICO TITULAR DE LA<br>DOCUMENTO_OFICINA</p>`,
+    plantilladescr: `<p class="p1" style="text-align: center;"><strong>ORDEN DE INVESTIGACI&Oacute;N A LA POLIC&Iacute;A MINISTERIAL</strong></p><p class="p2">&nbsp;</p><p class="p3" style="text-align: right;"><strong>No. de Caso:<span class="Apple-converted-space">&nbsp; EXPEDIENTE_NUMERO</span></strong></p><p class="p2">&nbsp;</p><p class="p4" style="text-align: left;"><strong>Lugar:</strong> DOCUMENTO_CIUDAD, DOCUMENTO_ESTADO<br><strong>Fecha:</strong><span class="Apple-converted-space">&nbsp; DOCUMENTO_FECHA</span>,<span class="Apple-converted-space">&nbsp; </span>Hora: DOCUMENTO_HORA<br><strong>Unidad de Investigaci&oacute;n:</strong> DOCUMENTO_OFICINA<br><strong>Agente del Ministerio P&Uacute;blico:</strong> EXPEDIENTE_NOMBRE_DEL_RESPONSABLE<br><strong>Agente de la Polic&iacute;a Ministerial Asignado:</strong><span class="Apple-converted-space">&nbsp; EXPEDIENTE_NOMBRE_DEL_AGENTE_RESPONSABLE</span></p><p class="p4" style="text-align: justify;">S&iacute;rvase llevar a cabo exhaustiva investigaci&oacute;n de los hechos denunciados dentro del n&uacute;mero de caso antes citado, debiendo informar a esta fiscal&iacute;a del resultado de la misma, en un per&iacute;odo de <span class="s1"><strong>30 d&iacute;as</strong></span>, esto con la finalidad de esclarecer los hechos denunciados por el <strong>OFENDIDO_NOMBRE</strong> por la probable comisi&oacute;n del delito de RELACION_DELITO. Lo anterior con fundamento en lo dispuesto por los art&iacute;culos 127, 131, 132 y dem&aacute;s relativos del C&oacute;digo Nacional de Procedimientos Penales y dem&aacute;s ordenamientos legales aplicables.</p><p class="p7">&nbsp;</p><p class="p1" style="text-align: center;">EL AGENTE DEL MINISTERIO P&Uacute;BLICO:</p><p class="p7" style="text-align: center;">&nbsp;</p><p class="p1" style="text-align: center;">________________________________________</p><p class="p1" style="text-align: center;">LIC. EXPEDIENTE_NOMBRE_DEL_RESPONSABLE<br>AGENTE DEL MINISTERIO P&Uacute;BLICO TITULAR DE LA<br>DOCUMENTO_OFICINA</p>`,
     variables: [
       { id: 1, descr: 'EXPEDIENTE_NUMERO', contenido: '0201-2023-00003/NUC', borrable: 'N', },
       { id: 2, descr: 'DOCUMENTO_CIUDAD', contenido: 'ENSENADA', borrable: 'N', },
@@ -91,9 +94,10 @@ export class AppComponent {
       options: { title: 'Opciones', items: 'save final_print sign_online' },
     },
     menubar: 'file edit insert view format table variables options',
-    plugins: 'lists link image table code wordcount searchreplace codesample',
-    toolbar: 'undo redo | alignleft aligncenter alignright alignjustify | bold italic | bullist numlist outdent indent | options',
+    plugins: 'lists link image table code wordcount searchreplace codesample code',
+    toolbar: 'undo redo | alignleft aligncenter alignright alignjustify | bold italic | bullist numlist outdent indent | code',
     content_style: this.documentStyles,
+    visual_table_class: 'tinymce_table',
     browser_spellcheck: true,
     height: 768,
     content_css: 'document',
