@@ -29,7 +29,8 @@
               "src/styles.css"
             ],
             "scripts": [
-              "node_modules/tinymce/tinymce.min.js"
+              "node_modules/tinymce/tinymce.min.js",
+              "node_modules/sweetalert2/dist/sweetalert2.all.min.js"
             ]
           },
           "configurations": {
@@ -92,7 +93,10 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/tinymce/tinymce.min.js",
+              "node_modules/sweetalert2/dist/sweetalert2.all.min.js"
+            ]
           }
         }
       }
